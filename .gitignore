@@ -1,2 +1,9 @@
 __pycache__/
 .venv/
+.pytest_cache/
+
+# Recorded landmark data: large, personal, and re-creatable with collect_data.py.
+data/
+
+# model.joblib, results.json and confusion_matrix.png are deliberately NOT
+# ignored: commit them once they come from real recorded data (see README).
