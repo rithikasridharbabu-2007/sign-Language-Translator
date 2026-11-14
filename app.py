@@ -1,3 +1,6 @@
+import argparse
+import sys
+
 import cv2
 import mediapipe as mp
 
@@ -5,9 +8,19 @@ import mediapipe as mp
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 
+def open_camera(index):
+    # macOS: the AVFoundation backend is more reliable; elsewhere use the default.
+    if sys.platform == "darwin":
+        return cv2.VideoCapture(index, cv2.CAP_AVFOUNDATION)
+    return cv2.VideoCapture(index)
+
+
 def main():
-    # macOS: AVFoundation backend is more reliable
-    cap = cv2.VideoCapture(0, cv2.CAP_AVFOUNDATION)
+    parser = argparse.ArgumentParser(description="Live hand-landmark tracking from a webcam.")
+    parser.add_argument("--camera", type=int, default=0, help="camera index (default: 0)")
+    args = parser.parse_args()
+
+    cap = open_camera(args.camera)
 
     # Optional: set resolution (safe to keep)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
@@ -15,7 +28,7 @@ def main():
 
     if not cap.isOpened():
         print("❌ Camera could not be opened.")
-        print("Try changing camera index from 0 to 1 in VideoCapture.")
+        print("Try another camera: python3 app.py --camera 1")
         return
 
     print("✅ Webcam started! Show your hand. Press Q to quit.")
